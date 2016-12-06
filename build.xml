@@ -1,0 +1,73 @@
+    <project name="Ant-Test" default="jar" basedir=".">
+    	<!-- Sets variables which can later be used. -->
+    	<!-- The value of a property is accessed via ${} -->
+    	<property name="src.dir" location="src" />
+        <property name="project.dir" value="${basedir}"/>
+    	<property name="build.dir" location="build" />
+        <property name="lib.dir" value="${project.dir}/lib"/>
+    	<!-- Variables used for JUnit testin -->
+    	<property name="test.dir" location="src" />
+    	<property name="test.report.dir" location="testreport" />
+    	
+
+    	<property name="test.build.dir" value="build/classes/Tests"/>
+    	<property name="test.src.dir" value="src/Tests"/>
+     
+         <property name="classpath.dir" value="${lib.dir}/junit-4.12.jar
+    											"/>
+     
+    	<path id="junit.class.path">
+            <pathelement location="${basedir}/lib/junit-4.12.jar"/>
+    		<pathelement location="${build.dir}"/>
+    		
+    	    <pathelement location="lib/junit-4.12.jar"/>
+    	    <pathelement location="lib/hamcrest-core-1.3.jar"/>
+    	    <pathelement location="${main.build.dir}"/>
+    	</path>
+     
+     
+    	<!-- Deletes the existing build, docs and dist directory-->
+    	<target name="clean">
+    		<delete dir="${build.dir}" />
+    		<delete dir="${test.report.dir}" />
+    	</target>
+     
+    	<!-- Creates the  build, docs and dist directory-->
+    	<target name="makedir">
+    		<mkdir dir="${build.dir}" />
+    		<mkdir dir="${test.report.dir}" />
+    	</target>
+     
+    	<!-- Compiles the java code (including the usage of library for JUnit -->
+    	<target name="compile" depends="clean, makedir">
+    	<mkdir dir="build/classes" />
+    	<mkdir dir="build/bin" />
+    	<javac srcdir="${src.dir}" destdir="build/classes"
+    	classpath="${classpath.dir}"/>
+    	<!-- копирование файлов в другую директорию -->
+    	<copy todir="build/bin">
+   		    <fileset dir="bin/Images">
+    	     <exclude name="**/*.jpeg"/>
+    	    </fileset>
+   		</copy>
+    		<!-- копирование батника в другую директорию -->
+    		<copy file="bin/startKallax.bat" todir="build/bin"/>
+    	</target>
+    	
+    	<target name="jar" depends="compile">
+    		<!-- размещение нашего jar файла в build/bin -->
+    		<jar destfile="build/bin/kallax.jar">
+    			
+    			<!-- в jar хотим запихнуть все файлы .class -->
+    			<fileset dir = "build/classes">
+    				<include name = "**/*.class"/>
+    			</fileset>
+    			
+    			<!-- при запуске jar файла вызываем наш Main.class из пакета value -->
+    			<manifest>
+    				<attribute name = "Main-Class" value = "kallax.Main" />
+    			</manifest>
+    		</jar>
+    	</target>
+     
+    </project>
